@@ -4,7 +4,7 @@ var async = require('async');  // npm install async
 var _ = require('underscore'); // npm install underscore
 
 // Throttle the filesystem access by sending everything through this async queue 
-var WORKERS = 500;
+var WORKERS = 250;
 var queue = async.queue(function(task, cc){ task(cc); }, WORKERS); 
 
 var _fs = {}; //internal namespace for throttled fs functions
@@ -57,10 +57,10 @@ function eachdir(dir, cc){
     var ondir = function(infos){
 	infos.forEach(function( e ){
 	    if( e.stats.isDirectory() ){
-		eachdir( path.join(dir, e.file), cc);
-	    }	    
-	    cc( infos );
+		eachdir( e.path, cc);
+	    }
 	});
+	cc( dir, infos );
     };
     
     statsdir(dir, ondir);      
